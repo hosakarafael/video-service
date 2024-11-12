@@ -1,9 +1,9 @@
 package com.rafaelhosaka.rhv.video.controller;
 
 import com.rafaelhosaka.rhv.video.dto.VideoRequest;
-import com.rafaelhosaka.rhv.video.exception.VideoNotFoundException;
-import com.rafaelhosaka.rhv.video.model.Video;
+import com.rafaelhosaka.rhv.video.dto.VideoResponse;
 import com.rafaelhosaka.rhv.video.service.VideoService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,22 +18,21 @@ public class VideoController {
     private final VideoService videoService;
 
     @GetMapping
-    public ResponseEntity<List<Video>> findAll(){
+    public ResponseEntity<List<VideoResponse>> findAll(){
         return ResponseEntity.ok().body(videoService.findAll());
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Video> uploadVideo(@RequestBody VideoRequest videoRequest){
+    public ResponseEntity<Integer> uploadVideo(@RequestBody VideoRequest videoRequest){
         return ResponseEntity.ok().body(videoService.uploadVideo(videoRequest));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Video> findById(@PathVariable("id") Long id){
+    public ResponseEntity<VideoResponse> findById(@PathVariable("id") Integer id){
         try{
             return ResponseEntity.ok().body(videoService.findById(id));
-        } catch (VideoNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
     }

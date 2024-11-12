@@ -1,36 +1,37 @@
 package com.rafaelhosaka.rhv.video.service;
 
 import com.rafaelhosaka.rhv.video.dto.VideoRequest;
-import com.rafaelhosaka.rhv.video.exception.VideoNotFoundException;
-import com.rafaelhosaka.rhv.video.model.Video;
+import com.rafaelhosaka.rhv.video.dto.VideoResponse;
 import com.rafaelhosaka.rhv.video.repository.VideoRepository;
+import com.rafaelhosaka.rhv.video.utils.VideoMapper;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class VideoService {
     private final VideoRepository videoRepository;
+    private final VideoMapper mapper;
 
-    public List<Video> findAll(){
-        return videoRepository.findAll();
+    public List<VideoResponse> findAll(){
+        return videoRepository.findAll().stream().map(mapper::toVideoResponse).collect(Collectors.toList());
     }
 
-    public Video uploadVideo(VideoRequest videoRequest) {
-        var video = Video.builder()
-                .title(videoRequest.title())
-                .createdAt(new Date())
-                .build();
-        videoRepository.save(video);
-        return video;
+    public Integer uploadVideo(VideoRequest videoRequest) {
+        var video = mapper.toVideo(videoRequest);
+        return videoRepository.save(video).getId();
     }
 
-    public Video findById(Long id) throws VideoNotFoundException {
-        return videoRepository.findById(id).orElseThrow(
-                () -> new VideoNotFoundException("Video with ID "+id+" not found")
+    public VideoResponse findById(Integer id) {
+        return videoRepository.findById(id)
+                .map(mapper::toVideoResponse)
+                .orElseThrow(
+                () -> new EntityNotFoundException("Video with ID "+id+" not found")
         );
     }
 }
