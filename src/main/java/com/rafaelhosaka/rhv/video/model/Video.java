@@ -20,7 +20,9 @@ public class Video {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
-    private String url;
+    private String description;
+    private String videoUrl;
     private int views;
+    private Integer userId;
     private Date createdAt;
 }

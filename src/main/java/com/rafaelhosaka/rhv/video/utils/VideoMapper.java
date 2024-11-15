@@ -11,9 +11,11 @@ public class VideoMapper {
         return Video.builder()
                 .id(request.id())
                 .title(request.title())
-                .url(request.url())
+                .description(request.description())
+                .videoUrl(request.videoUrl())
                 .views(request.views())
                 .createdAt(request.createdAt())
+                .userId(request.userId())
                 .build();
     }
 
@@ -21,8 +23,11 @@ public class VideoMapper {
         return new VideoResponse(
                 video.getId(),
                 video.getTitle(),
-                video.getUrl(),
+                video.getDescription(),
+                video.getVideoUrl(),
                 video.getViews(),
+                video.getUserId(),
+                null,
                 video.getCreatedAt()
         );
     }

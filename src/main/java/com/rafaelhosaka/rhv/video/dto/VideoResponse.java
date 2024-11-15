@@ -1,6 +1,21 @@
 package com.rafaelhosaka.rhv.video.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
-public record VideoResponse(Integer id, String title, String url, int views, Date createdAt) {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class VideoResponse{
+    private Integer id;
+    private String title;
+    private String description;
+    private String videoUrl;
+    private int views;
+    private Integer userId;
+    private UserResponse user;
+    private Date createdAt;
 }

@@ -1,9 +1,11 @@
 CREATE TABLE videos
 (
-    id bigint(20) NOT NULL AUTO_INCREMENT,
+    id int AUTO_INCREMENT,
     title varchar(255) NOT NULL,
-    url varchar(255),
+    description varchar(255),
+    video_url varchar(255),
     views integer default(0),
+    user_id int not null,
     created_at DATETIME DEFAULT (CURRENT_DATE),
     PRIMARY KEY (id)
 );
