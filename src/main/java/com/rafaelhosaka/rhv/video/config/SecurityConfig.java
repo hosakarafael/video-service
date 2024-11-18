@@ -39,19 +39,14 @@ public class SecurityConfig {
     public RequestMatcher matcher() {
         return request -> {
             try {
-                return isRequestFromGateway(request) || isRequestFromService(request);
+                return  isRequestFromTrustedService(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         };
     }
 
-    private boolean isRequestFromGateway(HttpServletRequest request){
-        String xForwardedFor = request.getHeader("X-Forwarded-For");
-        return xForwardedFor != null && (xForwardedFor.equals("127.0.0.1") || xForwardedFor.equals("0:0:0:0:0:0:0:1"));
-    }
-
-    private boolean isRequestFromService(HttpServletRequest request) throws Exception {
+    private boolean isRequestFromTrustedService(HttpServletRequest request) throws Exception {
         String header = request.getHeader("RHV-Header");
         return header != null && HmacUtils.verifyHmacSignature(value, secret, header);
     }
