@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "videos")
@@ -22,7 +23,9 @@ public class Video {
     private String title;
     private String description;
     private String videoUrl;
-    private int views;
+    @OneToMany
+    @JoinColumn(name = "video_id", referencedColumnName = "id")
+    private List<View> views;
     private Integer userId;
     private Date createdAt;
 }

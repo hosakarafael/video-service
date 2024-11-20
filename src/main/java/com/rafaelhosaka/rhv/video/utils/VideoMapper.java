@@ -13,7 +13,6 @@ public class VideoMapper {
                 .title(request.title())
                 .description(request.description())
                 .videoUrl(request.videoUrl())
-                .views(request.views())
                 .createdAt(request.createdAt())
                 .userId(request.userId())
                 .build();
@@ -25,7 +24,7 @@ public class VideoMapper {
                 video.getTitle(),
                 video.getDescription(),
                 video.getVideoUrl(),
-                video.getViews(),
+                video.getViews().size(),
                 video.getUserId(),
                 null,
                 video.getCreatedAt()

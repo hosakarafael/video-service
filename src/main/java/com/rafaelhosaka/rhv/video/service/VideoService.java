@@ -4,12 +4,11 @@ import com.rafaelhosaka.rhv.video.client.UserClient;
 import com.rafaelhosaka.rhv.video.dto.VideoRequest;
 import com.rafaelhosaka.rhv.video.dto.VideoResponse;
 import com.rafaelhosaka.rhv.video.repository.VideoRepository;
+import com.rafaelhosaka.rhv.video.repository.ViewRepository;
 import com.rafaelhosaka.rhv.video.utils.VideoMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
