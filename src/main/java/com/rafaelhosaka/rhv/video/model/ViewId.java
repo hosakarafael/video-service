@@ -1,20 +1,16 @@
 package com.rafaelhosaka.rhv.video.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "views")
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@IdClass(ViewId.class)
-public class View {
-    @Id
+public class ViewId implements Serializable {
     private String ip;
-    @Id
-    @Column(name = "video_id")
     private Integer videoId;
 }

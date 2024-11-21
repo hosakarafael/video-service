@@ -2,6 +2,7 @@ package com.rafaelhosaka.rhv.video.service;
 
 import com.rafaelhosaka.rhv.video.dto.ViewRequest;
 import com.rafaelhosaka.rhv.video.model.View;
+import com.rafaelhosaka.rhv.video.model.ViewId;
 import com.rafaelhosaka.rhv.video.repository.VideoRepository;
 import com.rafaelhosaka.rhv.video.repository.ViewRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,10 +28,10 @@ public class ViewService {
         video.getViews().add(view);
         try{
             viewRepository.save(view);
-            videoRepository.save(video);
         }catch (Exception e){
-            return e.getMessage();
+            e.printStackTrace();
         }
+
         return "view increase successfully";
     }
 }

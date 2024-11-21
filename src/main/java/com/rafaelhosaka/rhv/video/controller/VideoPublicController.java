@@ -35,6 +35,10 @@ public class VideoPublicController {
 
     @PostMapping("/view")
     public ResponseEntity<String> increaseViews(@RequestBody ViewRequest viewRequest){
-        return ResponseEntity.ok().body(viewService.increaseViews(viewRequest));
+        try{
+            return ResponseEntity.ok().body(viewService.increaseViews(viewRequest));
+        } catch (Exception e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
