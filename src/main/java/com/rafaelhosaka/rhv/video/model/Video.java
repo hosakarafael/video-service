@@ -21,6 +21,7 @@ public class Video {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
+    @Column(length = 3000)
     private String description;
     private String videoUrl;
     @OneToMany
