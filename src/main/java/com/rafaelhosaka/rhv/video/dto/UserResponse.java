@@ -1,6 +1,24 @@
 package com.rafaelhosaka.rhv.video.dto;
 
-import java.util.Date;
+import com.rafaelhosaka.rhv.video.dto.SubscriptionResponse;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record UserResponse(Integer id, String name, String email , String imageUrl, Date createdAt) {
+import java.util.Date;
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class UserResponse{
+    private Integer id;
+    private String name;
+    private String email;
+    private String imageUrl;
+    private Date createdAt;
+    private List<SubscriptionResponse> subscribedUsers;
+    private int subscribers;
 }

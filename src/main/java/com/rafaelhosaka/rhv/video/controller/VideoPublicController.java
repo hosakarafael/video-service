@@ -41,4 +41,13 @@ public class VideoPublicController {
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/user-ids")
+    public ResponseEntity<List<VideoResponse>> findByUserIds(@RequestBody List<Integer> ids){
+        try{
+            return ResponseEntity.ok().body(videoService.findByUserIds(ids));
+        }catch (Exception e){
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

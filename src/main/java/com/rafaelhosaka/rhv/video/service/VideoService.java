@@ -8,6 +8,7 @@ import com.rafaelhosaka.rhv.video.repository.ViewRepository;
 import com.rafaelhosaka.rhv.video.utils.VideoMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
@@ -21,12 +22,13 @@ public class VideoService {
     private final UserClient userClient;
 
     public List<VideoResponse> findAll(){
-        return videoRepository.findAll().stream()
+        var sort = Sort.by(Sort.Order.desc("createdAt"));
+        return videoRepository.findAll(sort).stream()
                 .map(mapper::toVideoResponse)
                 .peek(result -> {
                     var userResponse = userClient.findById(result.getUserId());
                     result.setUser(userResponse.getBody());
-                }).collect(Collectors.toList());
+                }).toList();
     }
 
     public Integer uploadVideo(VideoRequest videoRequest) throws Exception {
@@ -47,5 +49,15 @@ public class VideoService {
         var userResponse = userClient.findById(videoResponse.getUserId());
         videoResponse.setUser(userResponse.getBody());
         return videoResponse;
+    }
+
+    public List<VideoResponse> findByUserIds(List<Integer> ids){
+        var sort = Sort.by(Sort.Order.desc("createdAt"));
+        return videoRepository.findAllByUserIdIn(ids, sort).stream()
+                .map(mapper::toVideoResponse)
+                .peek(result -> {
+                    var userResponse = userClient.findById(result.getUserId());
+                    result.setUser(userResponse.getBody());
+                }).toList();
     }
 }
