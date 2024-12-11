@@ -1,5 +1,6 @@
 package com.rafaelhosaka.rhv.video.controller;
 
+import com.rafaelhosaka.rhv.video.dto.Response;
 import com.rafaelhosaka.rhv.video.dto.VideoResponse;
 import com.rafaelhosaka.rhv.video.dto.ViewRequest;
 import com.rafaelhosaka.rhv.video.service.VideoService;
@@ -25,29 +26,29 @@ public class VideoPublicController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<VideoResponse> findById(@PathVariable("id") Integer id){
+    public ResponseEntity<Response> findById(@PathVariable("id") Integer id){
         try{
             return ResponseEntity.ok().body(videoService.findById(id));
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(new Response(e.getMessage()));
         }
     }
 
     @PostMapping("/view")
-    public ResponseEntity<String> increaseViews(@RequestBody ViewRequest viewRequest){
+    public ResponseEntity<Response> increaseViews(@RequestBody ViewRequest viewRequest){
         try{
             return ResponseEntity.ok().body(viewService.increaseViews(viewRequest));
-        } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(new Response(e.getMessage()));
         }
     }
 
     @PostMapping("/user-ids")
-    public ResponseEntity<List<VideoResponse>> findByUserIds(@RequestBody List<Integer> ids){
+    public ResponseEntity findByUserIds(@RequestBody List<Integer> ids){
         try{
             return ResponseEntity.ok().body(videoService.findByUserIds(ids));
         }catch (Exception e){
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(new Response(e.getMessage()));
         }
     }
 }
