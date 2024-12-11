@@ -1,5 +1,6 @@
 package com.rafaelhosaka.rhv.video.controller;
 
+import com.rafaelhosaka.rhv.video.dto.ErrorCode;
 import com.rafaelhosaka.rhv.video.dto.Response;
 import com.rafaelhosaka.rhv.video.dto.VideoResponse;
 import com.rafaelhosaka.rhv.video.dto.ViewRequest;
@@ -7,7 +8,6 @@ import com.rafaelhosaka.rhv.video.service.VideoService;
 import com.rafaelhosaka.rhv.video.service.ViewService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,10 +27,12 @@ public class VideoPublicController {
 
     @GetMapping("{id}")
     public ResponseEntity<Response> findById(@PathVariable("id") Integer id){
-        try{
+        try {
             return ResponseEntity.ok().body(videoService.findById(id));
+        }catch (EntityNotFoundException e){
+            return ResponseEntity.badRequest().body(new Response(e.getMessage(), ErrorCode.ENTITY_NOT_FOUND));
         } catch (Exception e){
-            return ResponseEntity.badRequest().body(new Response(e.getMessage()));
+            return ResponseEntity.badRequest().body(new Response(e.getMessage(), ErrorCode.EXCEPTION));
         }
     }
 

@@ -5,8 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Response {
     private String message;
+    private ErrorCode errorCode;
+
+    public Response(String message){
+        setMessage(message);
+        setErrorCode(ErrorCode.DEFAULT);
+    }
 }
