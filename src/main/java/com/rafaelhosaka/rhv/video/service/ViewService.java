@@ -25,7 +25,6 @@ public class ViewService {
             return new Response("this user already watched this video");
         }
         var view = new View(ip,video.getId());
-        video.getViews().add(view);
         viewRepository.save(view);
 
         return new Response("view increase successfully");

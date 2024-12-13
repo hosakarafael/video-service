@@ -2,8 +2,11 @@ package com.rafaelhosaka.rhv.video.utils;
 
 import com.rafaelhosaka.rhv.video.dto.VideoRequest;
 import com.rafaelhosaka.rhv.video.dto.VideoResponse;
+import com.rafaelhosaka.rhv.video.model.Like;
 import com.rafaelhosaka.rhv.video.model.Video;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 @Component
 public class VideoMapper {
@@ -19,15 +22,15 @@ public class VideoMapper {
     }
 
     public VideoResponse toVideoResponse(Video video){
-        return new VideoResponse(
-                video.getId(),
-                video.getTitle(),
-                video.getDescription(),
-                video.getVideoUrl(),
-                video.getViews().size(),
-                video.getUserId(),
-                null,
-                video.getCreatedAt()
-        );
+        return VideoResponse.builder()
+                .id(video.getId())
+                .title(video.getTitle())
+                .description(video.getDescription())
+                .videoUrl(video.getVideoUrl())
+                .views(video.getViews().size())
+                .userId(video.getUserId())
+                .createdAt(video.getCreatedAt())
+                .likedUsers(video.getLikes().stream().map(Like::getUserId).collect(Collectors.toSet()))
+                .build();
     }
 }

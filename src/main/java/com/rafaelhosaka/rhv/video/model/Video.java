@@ -7,7 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "videos")
@@ -26,7 +27,10 @@ public class Video {
     private String videoUrl;
     @OneToMany
     @JoinColumn(name = "video_id", referencedColumnName = "id")
-    private List<View> views;
+    private Set<View> views = new HashSet<>();
     private Integer userId;
     private Date createdAt;
+    @OneToMany
+    @JoinColumn(name = "video_id", referencedColumnName = "id")
+    private Set<Like> likes = new HashSet<>();
 }

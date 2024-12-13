@@ -1,5 +1,6 @@
 package com.rafaelhosaka.rhv.video.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ErrorCode {
@@ -16,5 +17,15 @@ public enum ErrorCode {
     @JsonValue
     public String getCode() {
         return code;
+    }
+
+    @JsonCreator
+    public static ErrorCode fromCode(String code) {
+        for (ErrorCode errorCode : values()) {
+            if (errorCode.code.equals(code)) {
+                return errorCode;
+            }
+        }
+        return DEFAULT;
     }
 }
