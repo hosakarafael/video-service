@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum ErrorCode {
     DEFAULT("VS000"),
     ENTITY_NOT_FOUND("VS001"),
+    FORBIDDEN_SUBJECT("VS002"),
     EXCEPTION("VS100");
 
     private final String code;

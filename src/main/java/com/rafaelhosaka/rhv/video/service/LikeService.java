@@ -17,8 +17,12 @@ public class LikeService {
     private final VideoRepository videoRepository;
     private final UserClient userClient;
 
-    public Response like(LikeRequest likeRequest) {
+    public Response like(LikeRequest likeRequest) throws Exception {
         var user = userClient.findById(likeRequest.userId());
+
+        if(user.getBody() == null){
+            throw new Exception("user body is null or user email is null");
+        }
 
         var userId = user.getBody().getId();
         var video =  videoRepository.findById(likeRequest.videoId())
@@ -33,8 +37,12 @@ public class LikeService {
         return new Response("Liked successfully");
     }
 
-    public Response unlike(LikeRequest likeRequest) {
+    public Response unlike(LikeRequest likeRequest) throws Exception {
         var user = userClient.findById(likeRequest.userId());
+
+        if(user.getBody() == null){
+            throw new Exception("user body is null or user email is null");
+        }
 
         var userId = user.getBody().getId();
         var video =  videoRepository.findById(likeRequest.videoId())

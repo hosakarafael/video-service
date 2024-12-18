@@ -4,7 +4,7 @@ import com.rafaelhosaka.rhv.video.client.UserClient;
 import com.rafaelhosaka.rhv.video.dto.VideoRequest;
 import com.rafaelhosaka.rhv.video.dto.VideoResponse;
 import com.rafaelhosaka.rhv.video.repository.VideoRepository;
-import com.rafaelhosaka.rhv.video.utils.VideoMapper;
+import com.rafaelhosaka.rhv.video.utils.Mapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VideoService {
     private final VideoRepository videoRepository;
-    private final VideoMapper mapper;
+    private final Mapper mapper;
     private final UserClient userClient;
 
     public List<VideoResponse> findAll(){
