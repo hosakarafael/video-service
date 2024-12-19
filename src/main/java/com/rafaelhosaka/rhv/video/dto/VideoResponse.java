@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -18,8 +19,8 @@ public class VideoResponse extends Response{
     private String description;
     private String videoUrl;
     private int views;
-    private Integer userId;
     private UserResponse user;
     private Date createdAt;
     private Set<Integer> likedUsers;
+    private List<CommentResponse> comments = new ArrayList<>();
 }

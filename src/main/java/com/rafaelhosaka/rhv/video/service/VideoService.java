@@ -23,10 +23,7 @@ public class VideoService {
         var sort = Sort.by(Sort.Order.desc("createdAt"));
         return videoRepository.findAll(sort).stream()
                 .map(mapper::toVideoResponse)
-                .peek(result -> {
-                    var userResponse = userClient.findById(result.getUserId());
-                    result.setUser(userResponse.getBody());
-                }).toList();
+                .toList();
     }
 
     public Integer uploadVideo(VideoRequest videoRequest) throws Exception {
@@ -39,23 +36,17 @@ public class VideoService {
     }
 
     public VideoResponse findById(Integer id) {
-        var videoResponse =  videoRepository.findById(id)
+        return videoRepository.findById(id)
                 .map(mapper::toVideoResponse)
                 .orElseThrow(
                 () -> new EntityNotFoundException("Video with ID "+id+" not found")
         );
-        var userResponse = userClient.findById(videoResponse.getUserId());
-        videoResponse.setUser(userResponse.getBody());
-        return videoResponse;
     }
 
     public List<VideoResponse> findByUserIds(List<Integer> ids){
         var sort = Sort.by(Sort.Order.desc("createdAt"));
         return videoRepository.findAllByUserIdIn(ids, sort).stream()
                 .map(mapper::toVideoResponse)
-                .peek(result -> {
-                    var userResponse = userClient.findById(result.getUserId());
-                    result.setUser(userResponse.getBody());
-                }).toList();
+                .toList();
     }
 }

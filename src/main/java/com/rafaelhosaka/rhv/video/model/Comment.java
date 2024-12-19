@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.Date;
 
 @Entity
 @Table(name = "comments")
@@ -22,4 +23,5 @@ public class Comment {
     private Integer userId;
     @Column(length = 1000)
     private String text;
+    private Date createdAt;
 }

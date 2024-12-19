@@ -9,6 +9,7 @@ import com.rafaelhosaka.rhv.video.utils.Mapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +21,9 @@ public class CommentService {
 
     public Response createComment(CommentRequest commentRequest) {
         var comment = mapper.toComment(commentRequest);
+        comment.setCreatedAt(new Date());
         commentRepository.save(comment);
-        return new Response("Created comment successfully");
+        return mapper.toCommentResponse(comment);
     }
 
     public Response deleteComment(Integer id, String authHeader) throws Exception {
