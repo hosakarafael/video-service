@@ -21,7 +21,15 @@ public class VideoController {
     private final VideoService videoService;
     private final LikeService likeService;
     private final CommentService commentService;
-    private final JwtService jwtService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity findAllByUserId(@PathVariable("id") Integer id){
+        try{
+            return ResponseEntity.ok().body(videoService.findAllByUserId(id));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(new Response(e.getMessage()));
+        }
+    }
 
     @PostMapping
     public ResponseEntity<Integer> uploadVideo(@RequestBody VideoRequest videoRequest){

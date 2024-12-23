@@ -34,4 +34,5 @@ public class Video {
     @OneToMany
     @JoinColumn(name = "video_id", referencedColumnName = "id")
     private List<Comment> comments = new ArrayList<>();
+    private Visibility visibility;
 }

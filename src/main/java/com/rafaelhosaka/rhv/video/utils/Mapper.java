@@ -8,6 +8,7 @@ import com.rafaelhosaka.rhv.video.dto.VideoResponse;
 import com.rafaelhosaka.rhv.video.model.Comment;
 import com.rafaelhosaka.rhv.video.model.Like;
 import com.rafaelhosaka.rhv.video.model.Video;
+import com.rafaelhosaka.rhv.video.model.Visibility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.Comparator;
@@ -26,6 +27,7 @@ public class Mapper {
                 .videoUrl(request.videoUrl())
                 .createdAt(request.createdAt())
                 .userId(request.userId())
+                .visibility(request.visibility() != null ? request.visibility() :Visibility.PUBLIC)
                 .build();
     }
 
@@ -46,6 +48,7 @@ public class Mapper {
                                 .sorted(Comparator.comparing(CommentResponse::getCreatedAt).reversed())
                                 .toList())
                 .user(userClient.findById(video.getUserId()).getBody())
+                .visibility(video.getVisibility())
                 .build();
     }
 

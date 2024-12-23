@@ -21,14 +21,14 @@ public class VideoPublicController {
     private final ViewService viewService;
 
     @GetMapping
-    public ResponseEntity<List<VideoResponse>> findAll(){
-        return ResponseEntity.ok().body(videoService.findAll());
+    public ResponseEntity<List<VideoResponse>> findAllPublic(){
+        return ResponseEntity.ok().body(videoService.findAllPublic());
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Response> findById(@PathVariable("id") Integer id){
+    public ResponseEntity<Response> findByIdAndPublic(@PathVariable("id") Integer id){
         try {
-            return ResponseEntity.ok().body(videoService.findById(id));
+            return ResponseEntity.ok().body(videoService.findByIdAndPublic(id));
         }catch (EntityNotFoundException e){
             return ResponseEntity.badRequest().body(new Response(e.getMessage(), ErrorCode.ENTITY_NOT_FOUND));
         } catch (Exception e){
@@ -46,9 +46,9 @@ public class VideoPublicController {
     }
 
     @PostMapping("/user-ids")
-    public ResponseEntity findByUserIds(@RequestBody List<Integer> ids){
+    public ResponseEntity findByUserIdsAndPublic(@RequestBody List<Integer> ids){
         try{
-            return ResponseEntity.ok().body(videoService.findByUserIds(ids));
+            return ResponseEntity.ok().body(videoService.findByUserIdsAndPublic(ids));
         }catch (Exception e){
             return ResponseEntity.badRequest().body(new Response(e.getMessage()));
         }

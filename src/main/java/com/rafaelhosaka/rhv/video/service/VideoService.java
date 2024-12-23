@@ -3,6 +3,7 @@ package com.rafaelhosaka.rhv.video.service;
 import com.rafaelhosaka.rhv.video.client.UserClient;
 import com.rafaelhosaka.rhv.video.dto.VideoRequest;
 import com.rafaelhosaka.rhv.video.dto.VideoResponse;
+import com.rafaelhosaka.rhv.video.model.Visibility;
 import com.rafaelhosaka.rhv.video.repository.VideoRepository;
 import com.rafaelhosaka.rhv.video.utils.Mapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,9 +20,16 @@ public class VideoService {
     private final Mapper mapper;
     private final UserClient userClient;
 
-    public List<VideoResponse> findAll(){
+    public List<VideoResponse> findAll() {
         var sort = Sort.by(Sort.Order.desc("createdAt"));
         return videoRepository.findAll(sort).stream()
+                .map(mapper::toVideoResponse)
+                .toList();
+    }
+
+    public List<VideoResponse> findAllPublic(){
+        var sort = Sort.by(Sort.Order.desc("createdAt"));
+        return videoRepository.findByVisibility(Visibility.PUBLIC,sort).stream()
                 .map(mapper::toVideoResponse)
                 .toList();
     }
@@ -35,17 +43,24 @@ public class VideoService {
         return videoRepository.save(video).getId();
     }
 
-    public VideoResponse findById(Integer id) {
-        return videoRepository.findById(id)
+    public VideoResponse findByIdAndPublic(Integer id) {
+        return videoRepository.findByIdAndVisibility(id,Visibility.PUBLIC)
                 .map(mapper::toVideoResponse)
                 .orElseThrow(
                 () -> new EntityNotFoundException("Video with ID "+id+" not found")
         );
     }
 
-    public List<VideoResponse> findByUserIds(List<Integer> ids){
+    public List<VideoResponse> findByUserIdsAndPublic(List<Integer> ids){
         var sort = Sort.by(Sort.Order.desc("createdAt"));
-        return videoRepository.findAllByUserIdIn(ids, sort).stream()
+        return videoRepository.findAllByUserIdInAndVisibility(ids, Visibility.PUBLIC ,sort).stream()
+                .map(mapper::toVideoResponse)
+                .toList();
+    }
+
+    public List<VideoResponse> findAllByUserId(Integer id) {
+        var sort = Sort.by(Sort.Order.desc("createdAt"));
+        return videoRepository.findAllByUserId(id ,sort).stream()
                 .map(mapper::toVideoResponse)
                 .toList();
     }

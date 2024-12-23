@@ -1,5 +1,6 @@
 package com.rafaelhosaka.rhv.video.dto;
 
+import com.rafaelhosaka.rhv.video.model.Visibility;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,4 +24,5 @@ public class VideoResponse extends Response{
     private Date createdAt;
     private Set<Integer> likedUsers;
     private List<CommentResponse> comments = new ArrayList<>();
+    private Visibility visibility;
 }
