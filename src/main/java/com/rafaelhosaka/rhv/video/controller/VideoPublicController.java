@@ -30,9 +30,9 @@ public class VideoPublicController {
         try {
             return ResponseEntity.ok().body(videoService.findByIdAndPublic(id));
         }catch (EntityNotFoundException e){
-            return ResponseEntity.badRequest().body(new Response(e.getMessage(), ErrorCode.ENTITY_NOT_FOUND));
+            return ResponseEntity.badRequest().body(new Response(e.getMessage(), ErrorCode.VS_ENTITY_NOT_FOUND));
         } catch (Exception e){
-            return ResponseEntity.badRequest().body(new Response(e.getMessage(), ErrorCode.EXCEPTION));
+            return ResponseEntity.badRequest().body(new Response(e.getMessage(), ErrorCode.VS_EXCEPTION));
         }
     }
 

@@ -43,6 +43,14 @@ public class VideoService {
         return videoRepository.save(video).getId();
     }
 
+    public VideoResponse findById(Integer id) {
+        return videoRepository.findById(id)
+                .map(mapper::toVideoResponse)
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Video with ID "+id+" not found")
+                );
+    }
+
     public VideoResponse findByIdAndPublic(Integer id) {
         return videoRepository.findByIdAndVisibility(id,Visibility.PUBLIC)
                 .map(mapper::toVideoResponse)

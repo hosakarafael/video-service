@@ -4,10 +4,20 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ErrorCode {
-    DEFAULT("VS000"),
-    ENTITY_NOT_FOUND("VS001"),
-    FORBIDDEN_SUBJECT("VS002"),
-    EXCEPTION("VS100");
+    VS_SUCCESS("VS000"),
+    VS_ENTITY_NOT_FOUND("VS001"),
+    VS_FORBIDDEN_SUBJECT("VS002"),
+    VS_EXCEPTION("VS100"),
+
+    US_SUCCESS("US000"),
+    US_ENTITY_NOT_FOUND("US001"),
+    US_EXCEPTION("US100"),
+
+    AS_SUCCESS("AS000"),
+    AS_BAD_CREDENTIALS("AS001"),
+    AS_EMAIL_EMPTY("AS002"),
+    AS_PASSWORD_EMPTY("AS003"),
+    AS_EXCEPTION("AS100");
 
     private final String code;
 
@@ -27,6 +37,6 @@ public enum ErrorCode {
                 return errorCode;
             }
         }
-        return DEFAULT;
+        return VS_SUCCESS;
     }
 }

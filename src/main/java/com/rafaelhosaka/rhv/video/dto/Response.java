@@ -1,6 +1,5 @@
 package com.rafaelhosaka.rhv.video.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Response {
     private String message = "";
-    private ErrorCode errorCode = ErrorCode.DEFAULT;
+    private ErrorCode errorCode = ErrorCode.VS_SUCCESS;
 
     public Response(String message){
         this.message = message;

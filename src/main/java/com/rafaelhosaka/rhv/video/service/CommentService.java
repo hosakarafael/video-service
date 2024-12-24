@@ -39,7 +39,7 @@ public class CommentService {
         }
 
         if(!jwtService.isSameSubject(authHeader, user.getBody().getEmail())){
-           return new Response("Requested user is not allowed to do this operation", ErrorCode.FORBIDDEN_SUBJECT);
+           return new Response("Requested user is not allowed to do this operation", ErrorCode.VS_FORBIDDEN_SUBJECT);
         }
 
         commentRepository.delete(comment);
