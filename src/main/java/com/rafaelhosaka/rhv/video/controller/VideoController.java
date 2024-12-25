@@ -40,11 +40,11 @@ public class VideoController {
     }
 
     @PostMapping
-    public ResponseEntity<Integer> uploadVideo(@RequestBody VideoRequest videoRequest){
+    public ResponseEntity<Response> uploadVideo(@RequestBody VideoRequest videoRequest){
         try{
             return ResponseEntity.ok().body(videoService.uploadVideo(videoRequest));
         }catch (Exception e){
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(new Response(e.getMessage(), ErrorCode.VS_EXCEPTION));
         }
     }
 

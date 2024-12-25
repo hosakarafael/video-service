@@ -1,6 +1,8 @@
 package com.rafaelhosaka.rhv.video.service;
 
 import com.rafaelhosaka.rhv.video.client.UserClient;
+import com.rafaelhosaka.rhv.video.dto.ErrorCode;
+import com.rafaelhosaka.rhv.video.dto.Response;
 import com.rafaelhosaka.rhv.video.dto.VideoRequest;
 import com.rafaelhosaka.rhv.video.dto.VideoResponse;
 import com.rafaelhosaka.rhv.video.model.Visibility;
@@ -34,13 +36,23 @@ public class VideoService {
                 .toList();
     }
 
-    public Integer uploadVideo(VideoRequest videoRequest) throws Exception {
+    public Response uploadVideo(VideoRequest videoRequest) {
         if(videoRequest.userId() == null){
-            throw new Exception("userId cannot be null");
+            return new Response("userId cannot be null", ErrorCode.VS_USER_ID_NULL);
+        }
+        if(videoRequest.title().isEmpty()){
+            return new Response("title cannot be empty", ErrorCode.VS_TITLE_EMPTY);
+        }
+        if(videoRequest.title().length() > 100){
+            return new Response("title max length is 100", ErrorCode.VS_TITLE_LENGTH);
+        }
+        if(videoRequest.description() != null && videoRequest.description().length() > 5000){
+            return new Response("description max length is 5000", ErrorCode.VS_DESCRIPTION_LENGTH);
         }
         var video = mapper.toVideo(videoRequest);
         video.setCreatedAt(new Date());
-        return videoRepository.save(video).getId();
+        videoRepository.save(video);
+        return new Response("Video created successfully");
     }
 
     public VideoResponse findById(Integer id) {

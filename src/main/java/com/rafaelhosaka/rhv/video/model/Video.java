@@ -19,8 +19,9 @@ public class Video {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(length = 100)
     private String title;
-    @Column(length = 3000)
+    @Column(length = 5000)
     private String description;
     private String videoUrl;
     @OneToMany
