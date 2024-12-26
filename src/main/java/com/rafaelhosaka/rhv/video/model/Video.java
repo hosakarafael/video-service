@@ -32,7 +32,7 @@ public class Video {
     @OneToMany
     @JoinColumn(name = "video_id", referencedColumnName = "id")
     private Set<Like> likes = new HashSet<>();
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "video_id", referencedColumnName = "id")
     private List<Comment> comments = new ArrayList<>();
     private Visibility visibility;

@@ -6,7 +6,9 @@ import com.rafaelhosaka.rhv.video.dto.Response;
 import com.rafaelhosaka.rhv.video.dto.VideoRequest;
 import com.rafaelhosaka.rhv.video.dto.VideoResponse;
 import com.rafaelhosaka.rhv.video.model.Visibility;
+import com.rafaelhosaka.rhv.video.repository.LikeRepository;
 import com.rafaelhosaka.rhv.video.repository.VideoRepository;
+import com.rafaelhosaka.rhv.video.repository.ViewRepository;
 import com.rafaelhosaka.rhv.video.utils.Mapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,9 @@ public class VideoService {
     private final VideoRepository videoRepository;
     private final Mapper mapper;
     private final UserClient userClient;
+    private final JwtService jwtService;
+    private final ViewRepository viewRepository;
+    private final LikeRepository likeRepository;
 
     public List<VideoResponse> findAll() {
         var sort = Sort.by(Sort.Order.desc("createdAt"));
@@ -83,5 +88,26 @@ public class VideoService {
         return videoRepository.findAllByUserId(id ,sort).stream()
                 .map(mapper::toVideoResponse)
                 .toList();
+    }
+
+    public Response deleteVideo(Integer videoId, String authHeader) throws Exception {
+        var video = videoRepository.findById(videoId)
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Video with ID "+videoId+" not found")
+                );
+
+        var user = userClient.findById(video.getUserId());
+
+        if(user.getBody() == null){
+            throw new Exception("user body is null");
+        }
+
+        if(!jwtService.isSameSubject(authHeader, user.getBody().getEmail())){
+            return new Response("Requested user is not allowed to do this operation", ErrorCode.VS_FORBIDDEN_SUBJECT);
+        }
+        likeRepository.deleteAll(video.getLikes());
+        viewRepository.deleteAll(video.getViews());
+        videoRepository.delete(video);
+        return new Response("Deleted video successfully");
     }
 }

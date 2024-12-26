@@ -48,6 +48,15 @@ public class VideoController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Response> deleteVideo(@PathVariable("id") Integer videoId ,@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader){
+        try{
+            return ResponseEntity.ok().body(videoService.deleteVideo(videoId, authHeader));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(new Response(e.getMessage(), ErrorCode.VS_EXCEPTION));
+        }
+    }
+
     @PostMapping("/like")
     public ResponseEntity<Response> like(@RequestBody LikeRequest likeRequest){
         try {
