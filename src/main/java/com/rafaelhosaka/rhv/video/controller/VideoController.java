@@ -1,15 +1,17 @@
 package com.rafaelhosaka.rhv.video.controller;
 
 import com.rafaelhosaka.rhv.video.dto.*;
+import com.rafaelhosaka.rhv.video.model.Visibility;
 import com.rafaelhosaka.rhv.video.service.CommentService;
 import com.rafaelhosaka.rhv.video.service.LikeService;
 import com.rafaelhosaka.rhv.video.service.VideoService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/video")
@@ -40,9 +42,24 @@ public class VideoController {
     }
 
     @PostMapping
-    public ResponseEntity<Response> uploadVideo(@RequestBody VideoRequest videoRequest){
-        try{
+    public ResponseEntity<Response> uploadVideo(@RequestParam("title") String title,
+                                                @RequestParam("description") String description,
+                                                @RequestParam("userId") Integer userId,
+                                                @RequestParam("visibility") Visibility visibility,
+                                                @RequestParam("videoFile") MultipartFile videoFile){
+        try {
+            VideoRequest videoRequest = new VideoRequest(
+                    null, // id can be null or generated
+                    title,
+                    description,
+                    userId,
+                    videoFile,
+                    new Date(),  // current date as createdAt
+                    visibility
+            );
             return ResponseEntity.ok().body(videoService.uploadVideo(videoRequest));
+        }catch (RuntimeException e){
+            return ResponseEntity.internalServerError().body(new Response(e.getMessage(), ErrorCode.VS_UPLOAD_FAILED));
         }catch (Exception e){
             return ResponseEntity.badRequest().body(new Response(e.getMessage(), ErrorCode.VS_EXCEPTION));
         }
@@ -52,6 +69,15 @@ public class VideoController {
     public ResponseEntity<Response> deleteVideo(@PathVariable("id") Integer videoId ,@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader){
         try{
             return ResponseEntity.ok().body(videoService.deleteVideo(videoId, authHeader));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(new Response(e.getMessage(), ErrorCode.VS_EXCEPTION));
+        }
+    }
+
+    @PatchMapping
+    public ResponseEntity<Response> editVideo(@RequestBody VideoRequest videoRequest ,@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader){
+        try{
+            return ResponseEntity.ok().body(videoService.editVideo(videoRequest, authHeader));
         }catch (Exception e){
             return ResponseEntity.badRequest().body(new Response(e.getMessage(), ErrorCode.VS_EXCEPTION));
         }

@@ -53,4 +53,9 @@ public class VideoPublicController {
             return ResponseEntity.badRequest().body(new Response(e.getMessage()));
         }
     }
+
+    @GetMapping("/search/{query}")
+    public ResponseEntity<List<VideoResponse>> search(@PathVariable("query") String query){
+        return ResponseEntity.ok().body(videoService.search(query));
+    }
 }

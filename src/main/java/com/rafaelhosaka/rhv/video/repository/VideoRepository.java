@@ -13,4 +13,5 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
     Optional<Video> findByIdAndVisibility(Integer id, Visibility visibility);
     List<Video> findAllByUserIdInAndVisibility(List<Integer> ids, Visibility visibility , Sort sort);
     List<Video> findAllByUserId(Integer id, Sort sort);
+    List<Video> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String titleQuery, String descriptionQuery);
 }

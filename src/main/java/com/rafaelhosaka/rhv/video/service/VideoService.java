@@ -1,5 +1,6 @@
 package com.rafaelhosaka.rhv.video.service;
 
+import com.cloudinary.Cloudinary;
 import com.rafaelhosaka.rhv.video.client.UserClient;
 import com.rafaelhosaka.rhv.video.dto.ErrorCode;
 import com.rafaelhosaka.rhv.video.dto.Response;
@@ -14,7 +15,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,6 +26,8 @@ public class VideoService {
     private final JwtService jwtService;
     private final ViewRepository viewRepository;
     private final LikeRepository likeRepository;
+    private final CloudinaryService cloudinaryService;
+    private final ThumbnailService thumbnailService;
 
     public List<VideoResponse> findAll() {
         var sort = Sort.by(Sort.Order.desc("createdAt"));
@@ -41,11 +43,11 @@ public class VideoService {
                 .toList();
     }
 
-    public Response uploadVideo(VideoRequest videoRequest) {
+    public Response uploadVideo(VideoRequest videoRequest) throws Exception {
         if(videoRequest.userId() == null){
             return new Response("userId cannot be null", ErrorCode.VS_USER_ID_NULL);
         }
-        if(videoRequest.title().isEmpty()){
+        if(videoRequest.title() == null || videoRequest.title().isEmpty()){
             return new Response("title cannot be empty", ErrorCode.VS_TITLE_EMPTY);
         }
         if(videoRequest.title().length() > 100){
@@ -55,8 +57,17 @@ public class VideoService {
             return new Response("description max length is 5000", ErrorCode.VS_DESCRIPTION_LENGTH);
         }
         var video = mapper.toVideo(videoRequest);
-        video.setCreatedAt(new Date());
-        videoRepository.save(video);
+        try {
+            videoRepository.save(video);
+            cloudinaryService.upload(videoRequest.videoFile().getBytes(), "videos/" + video.getId(), "video", "video");
+            var thumbnailFile = thumbnailService.extractFrameFromVideo(videoRequest.videoFile(), "00:00:00");
+            cloudinaryService.upload(thumbnailFile, "videos/" + video.getId(), "thumbnail", "image");
+        }catch (Exception e){
+            if (video.getId() != null) {
+                videoRepository.deleteById(video.getId());
+            }
+            throw new RuntimeException("Video processing failed", e);
+        }
         return new Response("Video created successfully");
     }
 
@@ -99,7 +110,7 @@ public class VideoService {
         var user = userClient.findById(video.getUserId());
 
         if(user.getBody() == null){
-            throw new Exception("user body is null");
+            throw new Exception("user client body is null");
         }
 
         if(!jwtService.isSameSubject(authHeader, user.getBody().getEmail())){
@@ -109,5 +120,46 @@ public class VideoService {
         viewRepository.deleteAll(video.getViews());
         videoRepository.delete(video);
         return new Response("Deleted video successfully");
+    }
+
+    public Response editVideo(VideoRequest videoRequest, String authHeader) throws Exception {
+        var video = videoRepository.findById(videoRequest.id())
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Video with ID "+videoRequest.id()+" not found")
+                );
+
+        var user = userClient.findById(video.getUserId());
+
+        if(user.getBody() == null){
+            throw new Exception("user client body is null");
+        }
+
+        if(!jwtService.isSameSubject(authHeader, user.getBody().getEmail())){
+            return new Response("Requested user is not allowed to do this operation", ErrorCode.VS_FORBIDDEN_SUBJECT);
+        }
+
+        if(videoRequest.title() != null){
+            if(videoRequest.title().isEmpty()){
+                return new Response("title cannot be empty", ErrorCode.VS_TITLE_EMPTY);
+            }if(videoRequest.title().length() > 100){
+                return new Response("title max length is 100", ErrorCode.VS_TITLE_LENGTH);
+            }
+            video.setTitle(videoRequest.title());
+        }
+        if(videoRequest.description() != null){
+            if(videoRequest.description().length() > 5000){
+                return new Response("description max length is 5000", ErrorCode.VS_DESCRIPTION_LENGTH);
+            }
+            video.setDescription(videoRequest.description());
+        }
+        if(videoRequest.visibility() != null) video.setVisibility(videoRequest.visibility());
+
+        videoRepository.save(video);
+        return new Response("Edit video successfully");
+    }
+
+    public List<VideoResponse> search(String query) {
+        return videoRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query, query)
+                .stream().map(mapper::toVideoResponse).toList();
     }
 }

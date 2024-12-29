@@ -37,3 +37,6 @@ build/
 
 ### mysql ###
 mysql/**
+
+### video for thumbnail ###
+/videos

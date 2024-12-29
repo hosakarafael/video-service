@@ -11,6 +11,7 @@ public enum ErrorCode {
     VS_TITLE_EMPTY("VS004"),
     VS_TITLE_LENGTH("VS005"),
     VS_DESCRIPTION_LENGTH("VS006"),
+    VS_UPLOAD_FAILED("VS007"),
     VS_EXCEPTION("VS100");
 
     private final String code;
