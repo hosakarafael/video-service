@@ -47,6 +47,8 @@ public class Mapper {
                                 .toList())
                 .user(userClient.findById(video.getUserId()).getBody())
                 .visibility(video.getVisibility())
+                .thumbnailUrl(video.getThumbnailUrl())
+                .videoUrl(video.getVideoUrl())
                 .build();
     }
 

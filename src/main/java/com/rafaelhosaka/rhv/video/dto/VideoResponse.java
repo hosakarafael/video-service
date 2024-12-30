@@ -24,4 +24,6 @@ public class VideoResponse extends Response{
     private Set<Integer> likedUsers;
     private List<CommentResponse> comments = new ArrayList<>();
     private Visibility visibility;
+    private String videoUrl;
+    private String thumbnailUrl;
 }

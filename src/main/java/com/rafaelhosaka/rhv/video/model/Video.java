@@ -23,7 +23,6 @@ public class Video {
     private String title;
     @Column(length = 5000)
     private String description;
-    private String videoUrl;
     @OneToMany
     @JoinColumn(name = "video_id", referencedColumnName = "id")
     private Set<View> views = new HashSet<>();
@@ -36,4 +35,6 @@ public class Video {
     @JoinColumn(name = "video_id", referencedColumnName = "id")
     private List<Comment> comments = new ArrayList<>();
     private Visibility visibility;
+    private String thumbnailUrl;
+    private String videoUrl;
 }

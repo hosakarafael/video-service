@@ -59,9 +59,12 @@ public class VideoService {
         var video = mapper.toVideo(videoRequest);
         try {
             videoRepository.save(video);
-            cloudinaryService.upload(videoRequest.videoFile().getBytes(), "videos/" + video.getId(), "video", "video");
+            var videoUrl = cloudinaryService.upload(videoRequest.videoFile().getBytes(), "videos/" + video.getId(), "video", "video");
             var thumbnailFile = thumbnailService.extractFrameFromVideo(videoRequest.videoFile(), "00:00:00");
-            cloudinaryService.upload(thumbnailFile, "videos/" + video.getId(), "thumbnail", "image");
+            var thumbnailUrl = cloudinaryService.upload(thumbnailFile, "videos/" + video.getId(), "thumbnail", "image");
+            video.setVideoUrl(videoUrl);
+            video.setThumbnailUrl(thumbnailUrl);
+            videoRepository.save(video);
         }catch (Exception e){
             if (video.getId() != null) {
                 videoRepository.deleteById(video.getId());
@@ -152,7 +155,24 @@ public class VideoService {
             }
             video.setDescription(videoRequest.description());
         }
-        if(videoRequest.visibility() != null) video.setVisibility(videoRequest.visibility());
+        if(videoRequest.visibility() != null){
+            if(video.getVisibility() != videoRequest.visibility()){
+                if(videoRequest.visibility() == Visibility.PRIVATE){
+                    var thumbnailUrl = cloudinaryService.makeAuthenticated("videos/"+video.getId()+"/thumbnail", "image");
+                    var videoUrl = cloudinaryService.makeAuthenticated("videos/"+video.getId()+"/video", "video");
+                    video.setVideoUrl(videoUrl);
+                    video.setThumbnailUrl(thumbnailUrl);
+                }
+                if(videoRequest.visibility() == Visibility.PUBLIC){
+                    var thumbnailUrl = cloudinaryService.makePublic("videos/"+video.getId()+"/thumbnail", "image");
+                    var videoUrl = cloudinaryService.makePublic("videos/"+video.getId()+"/video" , "video");
+                    video.setVideoUrl(videoUrl);
+                    video.setThumbnailUrl(thumbnailUrl);
+                }
+
+            }
+            video.setVisibility(videoRequest.visibility());
+        }
 
         videoRepository.save(video);
         return new Response("Edit video successfully");
