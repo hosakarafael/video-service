@@ -21,4 +21,5 @@ public class UserResponse extends Response{
     private Date createdAt;
     private List<SubscriptionResponse> subscribedUsers;
     private int subscribers;
+    private String profileImageUrl;
 }
