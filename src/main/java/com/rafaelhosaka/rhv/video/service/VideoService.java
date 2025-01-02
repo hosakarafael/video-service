@@ -119,6 +119,9 @@ public class VideoService {
         if(!jwtService.isSameSubject(authHeader, user.getBody().getEmail())){
             return new Response("Requested user is not allowed to do this operation", ErrorCode.VS_FORBIDDEN_SUBJECT);
         }
+        cloudinaryService.delete("videos/"+video.getId()+"/thumbnail", "image");
+        cloudinaryService.delete("videos/"+video.getId()+"/video", "video");
+        cloudinaryService.deleteFolder("videos/"+video.getId());
         likeRepository.deleteAll(video.getLikes());
         viewRepository.deleteAll(video.getViews());
         videoRepository.delete(video);

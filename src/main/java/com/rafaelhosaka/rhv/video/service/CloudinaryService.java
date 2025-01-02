@@ -50,4 +50,19 @@ public class CloudinaryService {
         var result = cloudinary.uploader().rename(fileName, fileName, map);
         return (String) result.get("url");
     }
+
+    public void delete ( String fileName, String resourceType) throws IOException {
+        var cloudinary = getCloudinary();
+        var map = ObjectUtils.asMap(
+                "resource_type" , resourceType,
+                "invalidate", true
+        );
+        cloudinary.uploader().destroy("rhv/"+fileName,map);
+    }
+
+    public void deleteFolder ( String folderName) throws Exception {
+        var cloudinary = getCloudinary();
+
+        cloudinary.api().deleteFolder("rhv/"+folderName, ObjectUtils.emptyMap());
+    }
 }
