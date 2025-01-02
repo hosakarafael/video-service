@@ -20,7 +20,7 @@ public class CloudinaryService {
     public String upload (byte[] fileBytes, String folderName, String fileName, String type) throws IOException {
         var cloudinary = getCloudinary();
         var map = ObjectUtils.asMap(
-                "folder", folderName,
+                "folder", "rhv/"+folderName,
                 "resource_type", type,
                 "public_id", fileName
         );
