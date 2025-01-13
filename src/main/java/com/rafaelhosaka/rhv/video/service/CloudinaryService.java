@@ -17,11 +17,12 @@ public class CloudinaryService {
         return new Cloudinary(environment.getProperty("CLOUDINARY_URL"));
     }
 
-    public String upload (byte[] fileBytes, String folderName, String fileName, String type) throws IOException {
+    public String upload (byte[] fileBytes, String folderName, String fileName, String resourceType, String type) throws IOException {
         var cloudinary = getCloudinary();
         var map = ObjectUtils.asMap(
                 "folder", "rhv/"+folderName,
-                "resource_type", type,
+                "resource_type", resourceType,
+                "type", type,
                 "public_id", fileName
         );
         var result = cloudinary.uploader().upload(fileBytes, map);
@@ -36,7 +37,7 @@ public class CloudinaryService {
                 "resource_type" , resourceType,
                 "invalidate" , true
         );
-        var result = cloudinary.uploader().rename(fileName, fileName, map);
+        var result = cloudinary.uploader().rename("rhv/"+fileName, fileName, map);
         return (String) result.get("url");
     }
 
@@ -47,14 +48,15 @@ public class CloudinaryService {
                 "resource_type" , resourceType,
                 "to_type", "upload"
         );
-        var result = cloudinary.uploader().rename(fileName, fileName, map);
+        var result = cloudinary.uploader().rename("rhv/"+fileName, fileName, map);
         return (String) result.get("url");
     }
 
-    public void delete ( String fileName, String resourceType) throws IOException {
+    public void delete ( String fileName, String resourceType, String type) throws IOException {
         var cloudinary = getCloudinary();
         var map = ObjectUtils.asMap(
                 "resource_type" , resourceType,
+                "type" , type,
                 "invalidate", true
         );
         cloudinary.uploader().destroy("rhv/"+fileName,map);

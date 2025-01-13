@@ -1,6 +1,5 @@
 package com.rafaelhosaka.rhv.video.service;
 
-import com.cloudinary.Cloudinary;
 import com.rafaelhosaka.rhv.video.client.UserClient;
 import com.rafaelhosaka.rhv.video.dto.ErrorCode;
 import com.rafaelhosaka.rhv.video.dto.Response;
@@ -10,7 +9,7 @@ import com.rafaelhosaka.rhv.video.model.Visibility;
 import com.rafaelhosaka.rhv.video.repository.LikeRepository;
 import com.rafaelhosaka.rhv.video.repository.VideoRepository;
 import com.rafaelhosaka.rhv.video.repository.ViewRepository;
-import com.rafaelhosaka.rhv.video.utils.Mapper;
+import com.rafaelhosaka.rhv.video.utils.VideoMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -21,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VideoService {
     private final VideoRepository videoRepository;
-    private final Mapper mapper;
+    private final VideoMapper mapper;
     private final UserClient userClient;
     private final JwtService jwtService;
     private final ViewRepository viewRepository;
@@ -59,9 +58,10 @@ public class VideoService {
         var video = mapper.toVideo(videoRequest);
         try {
             videoRepository.save(video);
-            var videoUrl = cloudinaryService.upload(videoRequest.videoFile().getBytes(), "videos/" + video.getId(), "video", "video");
+            var type = video.getVisibility() == Visibility.PUBLIC ? "upload" : "authenticated";
+            var videoUrl = cloudinaryService.upload(videoRequest.videoFile().getBytes(), "videos/" + video.getId(), "video", "video", type);
             var thumbnailFile = thumbnailService.extractFrameFromVideo(videoRequest.videoFile(), "00:00:00");
-            var thumbnailUrl = cloudinaryService.upload(thumbnailFile, "videos/" + video.getId(), "thumbnail", "image");
+            var thumbnailUrl = cloudinaryService.upload(thumbnailFile, "videos/" + video.getId(), "thumbnail", "image", type);
             video.setVideoUrl(videoUrl);
             video.setThumbnailUrl(thumbnailUrl);
             videoRepository.save(video);
@@ -119,8 +119,9 @@ public class VideoService {
         if(!jwtService.isSameSubject(authHeader, user.getBody().getEmail())){
             return new Response("Requested user is not allowed to do this operation", ErrorCode.VS_FORBIDDEN_SUBJECT);
         }
-        cloudinaryService.delete("videos/"+video.getId()+"/thumbnail", "image");
-        cloudinaryService.delete("videos/"+video.getId()+"/video", "video");
+        var type = video.getVisibility() == Visibility.PUBLIC ? "upload" : "authenticated";
+        cloudinaryService.delete("videos/"+video.getId()+"/thumbnail", "image",type);
+        cloudinaryService.delete("videos/"+video.getId()+"/video", "video",type);
         cloudinaryService.deleteFolder("videos/"+video.getId());
         likeRepository.deleteAll(video.getLikes());
         viewRepository.deleteAll(video.getViews());

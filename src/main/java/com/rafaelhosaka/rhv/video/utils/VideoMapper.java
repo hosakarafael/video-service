@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class Mapper {
+public class VideoMapper {
     private final UserClient userClient;
 
     public Video toVideo(VideoRequest request){

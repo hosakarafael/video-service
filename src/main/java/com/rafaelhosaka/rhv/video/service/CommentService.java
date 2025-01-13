@@ -5,7 +5,7 @@ import com.rafaelhosaka.rhv.video.dto.CommentRequest;
 import com.rafaelhosaka.rhv.video.dto.ErrorCode;
 import com.rafaelhosaka.rhv.video.dto.Response;
 import com.rafaelhosaka.rhv.video.repository.CommentRepository;
-import com.rafaelhosaka.rhv.video.utils.Mapper;
+import com.rafaelhosaka.rhv.video.utils.VideoMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final JwtService jwtService;
     private final UserClient userClient;
-    private final Mapper mapper;
+    private final VideoMapper mapper;
 
     public Response createComment(CommentRequest commentRequest) {
         var comment = mapper.toComment(commentRequest);
